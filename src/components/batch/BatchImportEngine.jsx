@@ -255,7 +255,7 @@ export default function BatchImportEngine({ onAddAuditLog, onNavigateTab }) {
           className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-extrabold text-xs shadow-md transition flex items-center gap-2 cursor-pointer shrink-0"
         >
           <Download className="w-4 h-4" />
-          <span>Download CSV Template</span>
+          <span>Download Official Template</span>
         </button>
       </div>
 
@@ -340,7 +340,7 @@ export default function BatchImportEngine({ onAddAuditLog, onNavigateTab }) {
             </p>
           </div>
 
-          {/* Single-Click "Confirm & Ingest Records" Button */}
+          {/* "Confirm Ingest" Button */}
           <button
             onClick={handleConfirmIngest}
             disabled={isCommitting || validRecords.length === 0}
@@ -354,7 +354,7 @@ export default function BatchImportEngine({ onAddAuditLog, onNavigateTab }) {
             ) : (
               <>
                 <Check className="w-4 h-4" />
-                <span>Confirm & Ingest Records ({validRecords.length} Approved)</span>
+                <span>Confirm Ingest ({validRecords.length} Valid Records)</span>
               </>
             )}
           </button>

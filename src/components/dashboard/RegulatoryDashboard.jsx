@@ -187,31 +187,31 @@ export default function RegulatoryDashboard({
           </div>
         </div>
 
-        {/* KPI 4: Requires Attention / Duplicate Crossovers */}
+        {/* KPI 4: Cross-Institution Duplicate Crossover Alerts */}
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-red-200/80 dark:border-red-900/60 shadow-sm hover:shadow-md transition bg-red-50/20 dark:bg-red-950/20">
           <div className="flex items-center justify-between text-red-500 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Requires Attention</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Duplicate Crossovers</span>
             <ShieldAlert className="w-4 h-4 text-red-600 dark:text-red-400" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-red-600 dark:text-red-400">
             {VIDYA_METRICS.requiresAttention}
           </div>
           <div className="text-[10px] text-red-600 dark:text-red-400 font-semibold mt-1">
-            Duplicate Crossovers
+            Cross-Institution Alerts
           </div>
         </div>
 
-        {/* KPI 5: Sanctioned Quota Alerts */}
+        {/* KPI 5: Quota Alerts */}
         <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-900/60 shadow-sm hover:shadow-md transition bg-amber-50/20 dark:bg-amber-950/20 col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between text-amber-600 mb-2">
-            <span className="text-[11px] font-bold uppercase tracking-wider">Intake Quota Alerts</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider">Quota Alerts</span>
             <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
           <div className="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400">
             {VIDYA_METRICS.sanctionedQuotaAlerts}
           </div>
           <div className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold mt-1">
-            Capacity Ceiling Breaches
+            Sanctioned Quota Alerts
           </div>
         </div>
 

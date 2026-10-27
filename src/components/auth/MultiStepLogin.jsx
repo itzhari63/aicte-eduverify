@@ -23,8 +23,8 @@ import { formatApaar, cleanApaar } from '../../data/validationEngine';
 export const AUTH_ROLES = [
   {
     id: "INSTITUTE_ADMIN",
-    title: "Institute Administrator",
-    category: "AISHE / AICTE Approved Colleges",
+    title: "Institutional Admin",
+    category: "Colleges & Universities",
     description: "Manage institutional student admissions, program sanctioned intake quotas, and batch CSV ingestion.",
     icon: Building2,
     badge: "Approved College",
@@ -46,7 +46,7 @@ export const AUTH_ROLES = [
   {
     id: "AICTE_OFFICIAL",
     title: "AICTE Regulatory Official",
-    category: "Bureau & State Council Authorities",
+    category: "Central / State Bureau",
     description: "Apex regulatory surveillance, cross-institution duplicate APAAR detection, and sanctioned intake enforcement.",
     icon: ShieldCheck,
     badge: "Apex Council",
@@ -68,7 +68,7 @@ export const AUTH_ROLES = [
   {
     id: "STUDENT",
     title: "Student / Candidate",
-    category: "APAAR / ABC Academic Credit Holders",
+    category: "APAAR / ABC Holder",
     description: "Access sovereign academic dossier, Academic Bank of Credits (ABC), verifiable degree credentials, and DPDP consent.",
     icon: GraduationCap,
     badge: "Learner Portal",
@@ -414,7 +414,7 @@ export default function MultiStepLogin({
                 className="px-2.5 py-1 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-700 dark:text-amber-300 rounded-lg text-xs font-bold flex items-center gap-1 transition"
               >
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Autofill Demo</span>
+                <span>Auto-fill Demo Credentials</span>
               </button>
             </div>
 
@@ -524,7 +524,7 @@ export default function MultiStepLogin({
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Departmental Passkey
+                    Security Key / Password
                   </label>
                   <div className="relative">
                     <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
@@ -673,7 +673,7 @@ export default function MultiStepLogin({
                 onClick={handleOneClickDemo}
                 className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-extrabold shadow-sm transition hover:scale-105 active:scale-95 shrink-0 cursor-pointer"
               >
-                Demo 1-Click Login
+                One-Click Demo Login
               </button>
             </div>
 

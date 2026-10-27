@@ -11,6 +11,20 @@ export const VIDYA_METRICS = {
 
 export const SANCTIONED_INTAKE_PROGRAMS = [
   {
+    id: "PROG-DIT-CSAI",
+    instituteName: "Delhi Institute of Technology (DIT)",
+    instituteCode: "1-10492811",
+    aisheCode: "C-11092",
+    programName: "M.Tech Cyber Security & Advanced AI",
+    programCode: "CSAI",
+    approvedIntake: 2,
+    actualAllotted: 3,
+    status: "EXCEEDED",
+    utilization: 150.0,
+    excessCount: 1,
+    alertMessage: "Intake capacity exceeded: Admitted 3 students against approved quota of 2 (+1 unauthorized admission)."
+  },
+  {
     id: "PROG-COEP-CSE",
     instituteName: "College of Engineering Pune (COEP Tech Univ)",
     instituteCode: "1-10293847",
@@ -91,12 +105,12 @@ export const DATA_INTEGRITY_FLAGS = [
     riskScore: "Critical",
     riskLevel: "CRITICAL",
     flagType: "CROSS_INSTITUTION_DUPLICATE",
-    primaryInstitute: "College of Engineering Pune (COEP)",
-    secondaryInstitute: "Delhi Technological University (DTU)",
-    reason: "Potential duplicate candidate: Cross-institution duplicate APAAR crossover detected between College of Engineering Pune and Delhi Technological University.",
+    primaryInstitute: "Delhi Institute of Technology",
+    secondaryInstitute: "National Institute of Technology",
+    reason: "Potential duplicate candidate: Cross-institution duplicate APAAR crossover detected between Delhi Institute of Technology and National Institute of Technology.",
     timestamp: "2026-10-27T10:14:22Z",
     status: "REQUIRES_ATTENTION",
-    enrolledPrograms: ["B.Tech CSE (COEP)", "B.Tech IT (DTU)"]
+    enrolledPrograms: ["B.Tech CSE (Delhi Institute of Technology)", "B.Tech IT (National Institute of Technology)"]
   },
   {
     id: "FLAG-CRIT-002",

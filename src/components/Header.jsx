@@ -343,11 +343,11 @@ export default function Header({
                 {/* Primary Stakeholder Login Trigger */}
                 <button
                   onClick={() => onOpenLoginModal?.(currentRole)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white rounded-xl shadow-md text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer"
-                  title="Authenticate into AICTE Stakeholder Portal"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white rounded-xl shadow-md text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer"
+                  title="Sign In to AICTE Stakeholder Portal"
                 >
                   <LogIn className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Stakeholder Login</span>
+                  <span>Sign In</span>
                 </button>
               </div>
             )}
@@ -444,14 +444,24 @@ export default function Header({
             </div>
 
 
-            {/* Dark / Light Toggle */}
+            {/* Global Light & Dark Mode Toggle Switcher */}
             <button
               onClick={() => setDarkMode(!darkMode)}
-              className="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-xl border border-slate-200 dark:border-slate-700 transition cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300"
               title={darkMode ? "Switch to Light Theme" : "Switch to Dark Theme"}
               aria-label="Toggle Theme"
             >
-              {darkMode ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-700" />}
+              {darkMode ? (
+                <>
+                  <Sun className="w-4 h-4 text-amber-400" />
+                  <span className="hidden md:inline text-[11px]">Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4 text-slate-700" />
+                  <span className="hidden md:inline text-[11px]">Dark</span>
+                </>
+              )}
             </button>
 
           </div>
