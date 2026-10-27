@@ -759,6 +759,16 @@ app.get('/api/intake-breaches', async (req, res) => {
   res.json({ success: true, count: memoryBreaches.length, data: memoryBreaches });
 });
 
+app.get('/api/breaches', async (req, res) => {
+  if (isDbConnected()) {
+    try {
+      const data = await IntakeBreachModel.find({}).lean();
+      return res.json({ success: true, count: data.length, data });
+    } catch {}
+  }
+  res.json({ success: true, count: memoryBreaches.length, data: memoryBreaches });
+});
+
 app.post('/api/intake-breaches/:id/resolve', async (req, res) => {
   const { action = 'PENALIZE_FEE', notes } = req.body;
   const statusUpdate = action === 'RESOLVE' ? 'RESOLVED' : 'PENALTY_ENFORCED';
@@ -812,6 +822,16 @@ app.post('/api/intake-breaches/:id/resolve', async (req, res) => {
 // 9. AUDIT TRAIL API
 // ==========================================
 app.get('/api/audit-logs', async (req, res) => {
+  if (isDbConnected()) {
+    try {
+      const data = await AuditLogModel.find({}).sort({ timestamp: -1 }).lean();
+      return res.json({ success: true, count: data.length, data });
+    } catch {}
+  }
+  res.json({ success: true, count: memoryAuditLogs.length, data: memoryAuditLogs });
+});
+
+app.get('/api/audit', async (req, res) => {
   if (isDbConnected()) {
     try {
       const data = await AuditLogModel.find({}).sort({ timestamp: -1 }).lean();
