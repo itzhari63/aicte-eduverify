@@ -87,11 +87,11 @@ app.post('/api/auth/login', (req, res) => {
   const token = `aicte_auth_${crypto.randomBytes(16).toString('hex')}`;
 
   let user = null;
-  if (role === 'CENTRAL_ADMIN') {
+  if (role === 'CENTRAL_ADMIN' || role === 'AICTE_OFFICIAL') {
     user = {
       id: "USR-AICTE-001",
-      role: "CENTRAL_ADMIN",
-      roleTitle: "AICTE Central Admin",
+      role: role,
+      roleTitle: "AICTE Regulatory Official",
       name: "Prof. T. G. Sitharam",
       designation: "Chairman, AICTE & Apex Regulatory Authority",
       email: identifier || "admin@aicte-india.org",
@@ -100,19 +100,21 @@ app.post('/api/auth/login', (req, res) => {
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
       ssoProvider: "Parichay / MeriPehchan (National Government SSO)",
       securityLevel: "LEVEL-4 APEX CLEARANCE",
+      redirectTab: "DASHBOARD",
       token
     };
-  } else if (role === 'INSTITUTION_NODAL') {
+  } else if (role === 'INSTITUTION_NODAL' || role === 'INSTITUTE_ADMIN') {
     const pid = req.body.pid || identifier || "1-10293847";
     user = {
       id: "USR-NODAL-1029",
-      role: "INSTITUTION_NODAL",
-      roleTitle: "Institution Nodal Officer",
+      role: role,
+      roleTitle: "Institutional Admin",
       name: "Dr. Sudhir Deshmukh",
       designation: "Dean of Academic Admissions & Nodal Officer",
       email: identifier || "dean.academics@coep.ac.in",
       pid: pid,
       organization: "College of Engineering Pune (COEP Technological University)",
+      redirectTab: "INGESTION",
       institutionId: pid,
       institutionName: "College of Engineering Pune (COEP Technological University)",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",

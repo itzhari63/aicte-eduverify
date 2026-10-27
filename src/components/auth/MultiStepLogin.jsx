@@ -19,6 +19,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { formatApaar, cleanApaar } from '../../data/validationEngine';
+import { api } from '../../services/api';
 
 export const AUTH_ROLES = [
   {
@@ -182,33 +183,46 @@ export default function MultiStepLogin({
   };
 
   // Step 3: Complete Login and issue session
-  const completeLogin = () => {
+  const completeLogin = async () => {
     setIsSubmitting(true);
     setErrorMsg('');
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const demo = selectedRole.demoAccount;
-      
-      const userPayload = {
-        id: `USR-${selectedRole.id}-${Date.now().toString(16)}`,
-        name: demo.name,
-        role: selectedRole.id === 'AICTE_OFFICIAL' ? 'CENTRAL_ADMIN' : selectedRole.id,
-        roleTitle: selectedRole.title,
-        designation: demo.designation,
-        email: demo.email || `${selectedRole.id.toLowerCase()}@aicte-india.org`,
-        organization: demo.organization,
-        identifier: demo.identifier,
-        avatar: demo.avatar,
-        ssoProvider: "National Parichay & MeriPehchan Federated Gateway",
-        token: `jwt_token_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-        redirectTab: selectedRole.redirectTab,
-        redirectPath: selectedRole.redirectPath
-      };
+    const demo = selectedRole.demoAccount;
+    let backendUser = null;
+    try {
+      const resp = await api.login({
+        role: selectedRole.id,
+        identifier: selectedRole.id === 'INSTITUTE_ADMIN' 
+          ? (instituteCode || demo.identifier) 
+          : (selectedRole.id === 'AICTE_OFFICIAL' 
+              ? (officialId || demo.identifier) 
+              : (cleanApaar(studentIdentifier) || demo.identifier))
+      });
+      if (resp?.user) {
+        backendUser = resp.user;
+      }
+    } catch {}
 
-      onLoginSuccess?.(userPayload);
-      if (onClose) onClose();
-    }, 500);
+    setIsSubmitting(false);
+
+    const userPayload = {
+      id: backendUser?.id || `USR-${selectedRole.id}-${Date.now().toString(16)}`,
+      name: backendUser?.name || demo.name,
+      role: selectedRole.id === 'AICTE_OFFICIAL' ? 'CENTRAL_ADMIN' : selectedRole.id,
+      roleTitle: backendUser?.roleTitle || selectedRole.title,
+      designation: backendUser?.designation || demo.designation,
+      email: backendUser?.email || demo.email || `${selectedRole.id.toLowerCase()}@aicte-india.org`,
+      organization: backendUser?.organization || demo.organization,
+      identifier: demo.identifier,
+      avatar: backendUser?.avatar || demo.avatar,
+      ssoProvider: backendUser?.ssoProvider || "National Parichay & MeriPehchan Federated Gateway",
+      token: backendUser?.token || `jwt_token_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+      redirectTab: selectedRole.redirectTab,
+      redirectPath: selectedRole.redirectPath
+    };
+
+    onLoginSuccess?.(userPayload);
+    if (onClose) onClose();
   };
 
   const handleOtpSubmit = (e) => {

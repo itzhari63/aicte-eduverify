@@ -100,6 +100,50 @@ const sampleInstitutions = [
     departments: [
       { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 120, supernumerarySeats: 12, enrolledCount: 1 }
     ]
+  },
+  {
+    id: "1-10492811",
+    name: "Delhi Institute of Technology (DIT)",
+    shortName: "DIT Delhi",
+    type: "Engineering & Technology",
+    category: "Autonomous University",
+    state: "Delhi",
+    city: "New Delhi",
+    affiliation: "AICTE Central Bureau",
+    nirfRank: 38,
+    complianceScore: 96.8,
+    nodalOfficer: {
+      name: "Dr. Alok Verma",
+      designation: "Dean of Admissions",
+      email: "admissions@dit.ac.in",
+      phone: "+91 11 2690 7400"
+    },
+    departments: [
+      { code: "CSAI", name: "M.Tech Cyber Security & Advanced AI", approvedIntake: 2, supernumerarySeats: 0, enrolledCount: 3 },
+      { code: "CSE", name: "B.Tech Computer Science", approvedIntake: 120, supernumerarySeats: 12, enrolledCount: 1 }
+    ]
+  },
+  {
+    id: "1-99201945",
+    name: "National Institute of Technology",
+    shortName: "NIT",
+    type: "Institute of National Importance",
+    category: "Central Government",
+    state: "Delhi",
+    city: "New Delhi",
+    affiliation: "Ministry of Education",
+    nirfRank: 18,
+    complianceScore: 99.5,
+    nodalOfficer: {
+      name: "Dr. Rajiv Ranjan",
+      designation: "Registrar (Admissions)",
+      email: "admissions@nit.ac.in",
+      phone: "+91 11 2584 3211"
+    },
+    departments: [
+      { code: "IT", name: "B.Tech Information Technology", approvedIntake: 120, supernumerarySeats: 12, enrolledCount: 1 },
+      { code: "CSE", name: "B.Tech Computer Science", approvedIntake: 180, supernumerarySeats: 18, enrolledCount: 1 }
+    ]
   }
 ];
 
@@ -289,11 +333,28 @@ const sampleBreaches = [
     branchCode: "CSE",
     branchName: "Computer Science & Engineering",
     approvedIntake: 180,
+    supernumeraryQuota: 18,
     supernumerarySeats: 18,
     totalCap: 198,
     actualSubmitted: 204,
     excessCount: 6,
     noticeRef: "AICTE/REG/2026/DL-DTU-0091",
+    date: new Date().toISOString(),
+    status: "SHOW_CAUSE_ISSUED"
+  },
+  {
+    id: "BRCH-2026-9042",
+    institutionId: "1-10492811",
+    institutionName: "Delhi Institute of Technology (DIT)",
+    branchCode: "CSAI",
+    branchName: "M.Tech Cyber Security & Advanced AI",
+    approvedIntake: 2,
+    supernumeraryQuota: 0,
+    supernumerarySeats: 0,
+    totalCap: 2,
+    actualSubmitted: 3,
+    excessCount: 1,
+    noticeRef: "AICTE/REG/2026/DL-DIT-0042",
     date: new Date().toISOString(),
     status: "SHOW_CAUSE_ISSUED"
   }
