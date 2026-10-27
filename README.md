@@ -108,6 +108,37 @@ npm run build
 
 ---
 
+## 🌐 Public Cloud Deployment Guide (Vercel & Render)
+
+The project includes root configuration files [`vercel.json`](file:///c:/Users/gsat6/SIH/vercel.json) and [`render.yaml`](file:///c:/Users/gsat6/SIH/render.yaml) for automated deployment:
+
+### 1. Backend Deployment on Render
+* **GitHub Repository:** [https://github.com/itzhari63/aicte-eduverify](https://github.com/itzhari63/aicte-eduverify)
+* **Configuration:**
+  1. Open [Render Dashboard](https://dashboard.render.com/) ➔ Click **New +** ➔ **Web Service**.
+  2. Select repository: `itzhari63/aicte-eduverify`.
+  3. Render auto-configures from `render.yaml`:
+     * **Environment:** `Node`
+     * **Build Command:** `npm install`
+     * **Start Command:** `node server/index.js`
+  4. Under **Environment Variables**, add:
+     * `MONGODB_URI`: `mongodb+srv://gsat6384_db_user:AICTE_Secured_2026_Atlas@cluster0.taamwpx.mongodb.net/aicte_eduverify?retryWrites=true&w=majority&appName=Cluster0`
+     * `PORT`: `10000`
+     * `NODE_ENV`: `production`
+  5. Click **Deploy Web Service** to get your public backend URL (e.g. `https://aicte-eduverify-backend.onrender.com`).
+
+### 2. Frontend Deployment on Vercel
+* **Instant Claim Link:** [Claim Live Anonymous Deployment](https://vercel.com/claim-deployment?code=a4b671fa-6fa2-4e75-b6d6-7aed1d34e757)
+* **Permanent Continuous Deployment via GitHub:**
+  1. Open [Vercel Dashboard](https://vercel.com/new) ➔ Click **Import Project**.
+  2. Select `itzhari63/aicte-eduverify`.
+  3. Framework Preset: **Vite** *(auto-detected)*.
+  4. Under **Environment Variables**, set:
+     * `VITE_API_BASE_URL`: `https://<your-render-backend-url>.onrender.com/api`
+  5. Click **Deploy**. Vercel will host the frontend with global CDN and automated SSL at: `https://aicte-eduverify.vercel.app`.
+
+---
+
 ## 🧪 Demonstration & Testing Scenarios for Evaluators
 
 1. **Test Verification Sandbox (Landing Page):**
