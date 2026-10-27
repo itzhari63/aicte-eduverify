@@ -12,7 +12,6 @@ import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
 import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
 import DemoScenariosModal from './components/DemoScenariosModal';
-import { Sparkles } from 'lucide-react';
 
 import { 
   INITIAL_INSTITUTIONS, 
@@ -332,19 +331,6 @@ export default function App() {
         setTab={setTab}
         onOpenRegulatoryAlerts={() => setIsAlertsModalOpen(true)}
       />
-
-      {/* Floating Evaluator Demo Hub Launcher */}
-      <button
-        onClick={() => setIsDemoModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 px-4 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-extrabold text-xs shadow-2xl shadow-amber-500/30 border border-amber-300 dark:border-amber-600 flex items-center gap-2 transition-all hover:scale-105 active:scale-95 group cursor-pointer"
-        title="Open Interactive Evaluator Demo Scenarios Hub"
-      >
-        <Sparkles className="w-4 h-4 fill-slate-950 group-hover:rotate-12 transition-transform" />
-        <span className="tracking-wide hidden sm:inline">🎯 Live Evaluator Demos</span>
-        <span className="px-1.5 py-0.2 rounded-full bg-slate-950 text-amber-400 text-[10px] font-mono font-bold">
-          8 Scenarios
-        </span>
-      </button>
 
     </div>
   );
