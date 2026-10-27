@@ -15,7 +15,9 @@ import {
   Activity,
   CheckCircle,
   AlertCircle,
-  Database
+  Database,
+  MessageSquare,
+  Smartphone
 } from 'lucide-react';
 
 export default function Header({ 
@@ -27,6 +29,7 @@ export default function Header({
   setDarkMode, 
   onOpenProblemStatement,
   onOpenMongoModal,
+  onOpenRegulatoryAlerts,
   activeAlertCount = 2,
   backendConnected = false,
   dbConnected = false
@@ -204,6 +207,16 @@ export default function Header({
               )}
             </div>
 
+            {/* WhatsApp & SMS Regulatory Dispatcher Trigger */}
+            <button
+              onClick={onOpenRegulatoryAlerts}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 transition text-xs font-bold"
+              title="TRAI-Compliant WhatsApp & SMS Regulatory Dispatcher"
+            >
+              <Smartphone className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span>Regulatory Alerts</span>
+            </button>
+
             {/* Notifications Dropdown */}
             <div className="relative">
               <button
@@ -258,15 +271,28 @@ export default function Header({
                       )}
                     </div>
 
-                    <button
-                      onClick={() => {
-                        setTab("AUDIT");
-                        setShowNotifMenu(false);
-                      }}
-                      className="w-full py-1.5 text-center text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      View Immutable Audit Logs →
-                    </button>
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <button
+                        onClick={() => {
+                          setShowNotifMenu(false);
+                          onOpenRegulatoryAlerts?.();
+                        }}
+                        className="w-full py-1.5 px-3 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60 text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                      >
+                        <Smartphone className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>Dispatch WhatsApp / SMS Notice</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setTab("AUDIT");
+                          setShowNotifMenu(false);
+                        }}
+                        className="w-full py-1 text-center text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline block"
+                      >
+                        View Immutable Audit Logs →
+                      </button>
+                    </div>
                   </div>
                 </>
               )}

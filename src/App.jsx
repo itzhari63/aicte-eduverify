@@ -10,6 +10,7 @@ import AuditTrail from './components/AuditTrail';
 import ProblemStatementModal from './components/ProblemStatementModal';
 import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
+import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
 
 import { 
   INITIAL_INSTITUTIONS, 
@@ -44,6 +45,7 @@ export default function App() {
   const [isProblemStatementOpen, setIsProblemStatementOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isMongoModalOpen, setIsMongoModalOpen] = useState(false);
+  const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
   const [reportModalType, setReportModalType] = useState('NIRF');
   const [selectedStudentForCert, setSelectedStudentForCert] = useState(null);
 
@@ -168,6 +170,7 @@ export default function App() {
         setDarkMode={setDarkMode}
         onOpenProblemStatement={() => setIsProblemStatementOpen(true)}
         onOpenMongoModal={() => setIsMongoModalOpen(true)}
+        onOpenRegulatoryAlerts={() => setIsAlertsModalOpen(true)}
         activeAlertCount={activeDuplicateCount}
         backendConnected={backendConnected}
         dbConnected={dbConnected}
@@ -308,6 +311,13 @@ export default function App() {
         isOpen={isMongoModalOpen}
         onClose={() => setIsMongoModalOpen(false)}
         onConnected={handleDbConnected}
+      />
+
+      <RegulatoryAlertsModal
+        isOpen={isAlertsModalOpen}
+        onClose={() => setIsAlertsModalOpen(false)}
+        students={allStudents}
+        institutions={institutions}
       />
 
     </div>
