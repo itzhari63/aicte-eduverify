@@ -22,7 +22,7 @@ import {
 import { formatApaar, cleanApaar } from '../data/validationEngine';
 import { api } from '../services/api';
 
-export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect, onOpenDemoModal }) {
+export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect }) {
   const totalApproved = (institutions || []).reduce((sum, inst) => 
     sum + (inst.departments?.reduce((deptSum, d) => deptSum + (d.approvedIntake || 0) + (d.supernumerarySeats || 0), 0) || 0), 0
   ) || 0;
@@ -188,17 +188,6 @@ export default function LandingHub({ students, institutions = [], setTab, setRol
                   {preset.label}
                 </button>
               ))}
-
-              {onOpenDemoModal && (
-                <button
-                  type="button"
-                  onClick={onOpenDemoModal}
-                  className="px-2.5 py-1 rounded-lg border border-amber-400 bg-amber-500/30 hover:bg-amber-500/50 text-amber-200 text-[11px] font-bold transition hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1"
-                >
-                  <Sparkles className="w-3 h-3 text-amber-400" />
-                  <span>All 8 Demos →</span>
-                </button>
-              )}
             </div>
           </div>
 

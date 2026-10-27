@@ -11,7 +11,6 @@ import ProblemStatementModal from './components/ProblemStatementModal';
 import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
 import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
-import DemoScenariosModal from './components/DemoScenariosModal';
 
 import { 
   INITIAL_INSTITUTIONS, 
@@ -47,7 +46,6 @@ export default function App() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isMongoModalOpen, setIsMongoModalOpen] = useState(false);
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
-  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [reportModalType, setReportModalType] = useState('NIRF');
   const [selectedStudentForCert, setSelectedStudentForCert] = useState(null);
 
@@ -173,7 +171,6 @@ export default function App() {
         onOpenProblemStatement={() => setIsProblemStatementOpen(true)}
         onOpenMongoModal={() => setIsMongoModalOpen(true)}
         onOpenRegulatoryAlerts={() => setIsAlertsModalOpen(true)}
-        onOpenDemoModal={() => setIsDemoModalOpen(true)}
         activeAlertCount={activeDuplicateCount}
         backendConnected={backendConnected}
         dbConnected={dbConnected}
@@ -189,7 +186,6 @@ export default function App() {
             setTab={setTab}
             setRole={setRole}
             onVerifySelect={handleViewCertificate}
-            onOpenDemoModal={() => setIsDemoModalOpen(true)}
           />
         )}
 
@@ -324,13 +320,6 @@ export default function App() {
         institutions={institutions}
       />
 
-      <DemoScenariosModal
-        isOpen={isDemoModalOpen}
-        onClose={() => setIsDemoModalOpen(false)}
-        setRole={setRole}
-        setTab={setTab}
-        onOpenRegulatoryAlerts={() => setIsAlertsModalOpen(true)}
-      />
 
     </div>
   );
