@@ -22,7 +22,7 @@ import {
 import { formatApaar, cleanApaar } from '../data/validationEngine';
 import { api } from '../services/api';
 
-export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect }) {
+export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect, onOpenDemoModal }) {
   const totalApproved = (institutions || []).reduce((sum, inst) => 
     sum + (inst.departments?.reduce((deptSum, d) => deptSum + (d.approvedIntake || 0) + (d.supernumerarySeats || 0), 0) || 0), 0
   ) || 0;
@@ -148,6 +148,57 @@ export default function LandingHub({ students, institutions = [], setTab, setRol
             <div className="mt-3 flex items-center justify-center gap-2 text-xs text-slate-400">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Direct sovereign credential verification against AICTE National Academic Registry</span>
+            </div>
+
+            {/* 1-Click Demo Search Presets */}
+            <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-center gap-1.5 text-xs">
+              <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1 mr-1">
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                Demo Presets:
+              </span>
+
+              {[
+                { label: "Aditi Sharma (Verified Scholar)", apaar: "9823-4512-8831", badge: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30" },
+                { label: "Priya Verma (Duplicate Flagged)", apaar: "6521-4402-9918", badge: "bg-red-500/20 text-red-300 border-red-500/40 hover:bg-red-500/30" },
+                { label: "Ananya Sundaram (AI&DS 9.45 CGPA)", apaar: "7234-8891-0192", badge: "bg-purple-500/20 text-purple-300 border-purple-500/40 hover:bg-purple-500/30" },
+                { label: "Rohan Patel (OBC Merit)", apaar: "8145-9201-3342", badge: "bg-blue-500/20 text-blue-300 border-blue-500/40 hover:bg-blue-500/30" },
+                { label: "Unregistered (404 Sentinel)", apaar: "1111-2222-3333", badge: "bg-slate-500/20 text-slate-300 border-slate-500/40 hover:bg-slate-500/30" }
+              ].map(preset => (
+                <button
+                  key={preset.apaar}
+                  type="button"
+                  onClick={() => {
+                    setSearchInput(preset.apaar);
+                    const raw = cleanApaar(preset.apaar);
+                    setHasSearched(true);
+                    const found = students.find(s => cleanApaar(s.apaarId) === raw);
+                    if (found) {
+                      setSearchResult(found);
+                    } else {
+                      setSearchResult({
+                        apaarId: raw,
+                        name: "Unregistered Candidate",
+                        status: "NOT_FOUND",
+                        error: "No enrolled student record found with this APAAR ID in AICTE National Academic Registry."
+                      });
+                    }
+                  }}
+                  className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-sm ${preset.badge}`}
+                >
+                  {preset.label}
+                </button>
+              ))}
+
+              {onOpenDemoModal && (
+                <button
+                  type="button"
+                  onClick={onOpenDemoModal}
+                  className="px-2.5 py-1 rounded-lg border border-amber-400 bg-amber-500/30 hover:bg-amber-500/50 text-amber-200 text-[11px] font-bold transition hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  <span>All 8 Demos →</span>
+                </button>
+              )}
             </div>
           </div>
 

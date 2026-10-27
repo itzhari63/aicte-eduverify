@@ -17,7 +17,8 @@ import {
   AlertCircle,
   Database,
   MessageSquare,
-  Smartphone
+  Smartphone,
+  Sparkles
 } from 'lucide-react';
 
 export default function Header({ 
@@ -30,6 +31,7 @@ export default function Header({
   onOpenProblemStatement,
   onOpenMongoModal,
   onOpenRegulatoryAlerts,
+  onOpenDemoModal,
   activeAlertCount = 2,
   backendConnected = false,
   dbConnected = false
@@ -207,10 +209,20 @@ export default function Header({
               )}
             </div>
 
+            {/* Evaluator Live Demos Launcher */}
+            <button
+              onClick={onOpenDemoModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 rounded-xl font-extrabold text-xs shadow-md transition hover:scale-105 active:scale-95 cursor-pointer"
+              title="Open Interactive Evaluator Demo Hub (8 Live Scenarios)"
+            >
+              <Sparkles className="w-3.5 h-3.5 fill-slate-950" />
+              <span>Live Demos</span>
+            </button>
+
             {/* WhatsApp & SMS Regulatory Dispatcher Trigger */}
             <button
               onClick={onOpenRegulatoryAlerts}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 transition text-xs font-bold"
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60 transition text-xs font-bold"
               title="TRAI-Compliant WhatsApp & SMS Regulatory Dispatcher"
             >
               <Smartphone className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
