@@ -11,13 +11,15 @@ import ProblemStatementModal from './components/ProblemStatementModal';
 import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
 import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
-import LoginModal from './components/LoginModal';
+import { useTheme } from './components/theme/ThemeProvider';
+import LoginModal from './components/auth/LoginModal';
 import MultiStepLogin from './components/auth/MultiStepLogin';
 import RegulatoryDashboard from './components/dashboard/RegulatoryDashboard';
 import InstitutionDirectory from './components/institutions/InstitutionDirectory';
+import StudentRecordsTable from './components/records/StudentRecordsTable';
 import StudentRecordsModule from './components/records/StudentRecordsModule';
-import BatchImportEngine from './components/batch/BatchImportEngine';
-import PublicVerificationTool from './components/verify/PublicVerificationTool';
+import BatchImportEngine from './components/ingestion/BatchImportEngine';
+import PublicVerifyCard from './components/verification/PublicVerifyCard';
 import { getSavedSession, saveSession, clearSession } from './data/authUsers';
 
 import { 
@@ -84,15 +86,9 @@ export default function App() {
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
-  const [darkMode, setDarkMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem('aicte_theme');
-      if (saved) return saved === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } catch {
-      return false;
-    }
-  });
+  const { isDark, toggleTheme } = useTheme();
+  const darkMode = isDark;
+  const setDarkMode = toggleTheme;
 
   // Main Central Repositories in State
   const [institutions, setInstitutions] = useState(INITIAL_INSTITUTIONS);
@@ -159,20 +155,6 @@ export default function App() {
     } catch {}
   };
 
-  // Dark mode effect
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) {
-      root.classList.add('dark');
-      document.body.classList.add('dark');
-      try { localStorage.setItem('aicte_theme', 'dark'); } catch {}
-    } else {
-      root.classList.remove('dark');
-      document.body.classList.remove('dark');
-      try { localStorage.setItem('aicte_theme', 'light'); } catch {}
-    }
-  }, [darkMode]);
-
   // Audit log helper
   const handleAddAuditLog = async ({ actor, actorName, action, details, status }) => {
     const newLog = {
@@ -204,17 +186,16 @@ export default function App() {
     setRole(user.role);
 
     // Auto-navigate to the authenticated stakeholder's dedicated portal view
-    if (user.redirectTab) {
-      navigateTab(user.redirectTab);
-    } else if (user.role === 'CENTRAL_ADMIN' || user.role === 'AICTE_OFFICIAL') {
-      navigateTab('DASHBOARD');
-    } else if (user.role === 'INSTITUTE_ADMIN' || user.role === 'INSTITUTION_NODAL') {
-      navigateTab('INSTITUTIONS');
-    } else if (user.role === 'PUBLIC_VERIFIER') {
-      navigateTab('VERIFY');
-    } else if (user.role === 'STUDENT') {
+    if (user.role === 'STUDENT') {
       navigateTab('STUDENT');
+    } else if (user.role === 'CENTRAL_ADMIN' || user.role === 'AICTE_OFFICIAL' || user.role === 'INSTITUTE_ADMIN' || user.role === 'INSTITUTION_NODAL') {
+      navigateTab('DASHBOARD');
+    } else if (user.redirectTab) {
+      navigateTab(user.redirectTab);
+    } else {
+      navigateTab('DASHBOARD');
     }
+
 
     handleAddAuditLog({
       actor: `${user.name} (${user.roleTitle})`,
@@ -311,8 +292,10 @@ export default function App() {
         )}
 
         {currentTab === 'RECORDS' && (
-          <StudentRecordsModule
-            onNavigateTab={navigateTab}
+          <StudentRecordsTable
+            students={allStudents}
+            onViewStudent={handleViewApaarCard}
+            onViewCertificate={handleViewCertificate}
           />
         )}
 
@@ -324,11 +307,11 @@ export default function App() {
         )}
 
         {currentTab === 'VERIFY' && (
-          <PublicVerificationTool />
+          <PublicVerifyCard />
         )}
 
         {currentTab === 'LOGIN' && (
-          <MultiStepLogin
+          <LoginModal
             isOpen={true}
             isModal={false}
             onLoginSuccess={handleLoginSuccess}
@@ -478,12 +461,14 @@ export default function App() {
       />
 
       {/* High-Fidelity 3-Step Authentication Gateway Modal */}
-      <MultiStepLogin
+      <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
         isModal={true}
+        initialRole={loginModalInitialRole}
       />
+
 
 
     </div>
