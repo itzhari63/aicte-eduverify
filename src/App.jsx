@@ -12,6 +12,12 @@ import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
 import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
 import LoginModal from './components/LoginModal';
+import MultiStepLogin from './components/auth/MultiStepLogin';
+import RegulatoryDashboard from './components/dashboard/RegulatoryDashboard';
+import InstitutionDirectory from './components/institutions/InstitutionDirectory';
+import StudentRecordsModule from './components/records/StudentRecordsModule';
+import BatchImportEngine from './components/batch/BatchImportEngine';
+import PublicVerificationTool from './components/verify/PublicVerificationTool';
 import { getSavedSession, saveSession, clearSession } from './data/authUsers';
 
 import { 
@@ -22,9 +28,62 @@ import {
 } from './data/mockData';
 import { api } from './services/api';
 
+const TAB_TO_PATH = {
+  DASHBOARD: '/dashboard',
+  INSTITUTIONS: '/institutions',
+  RECORDS: '/records',
+  BATCH_IMPORT: '/batch-import',
+  VERIFY: '/verify',
+  LOGIN: '/login',
+  STUDENT: '/student/profile',
+  LANDING: '/',
+  ADMIN: '/admin',
+  INGESTION: '/ingestion',
+  VERIFIER: '/verifier',
+  CERTIFICATE: '/certificate',
+  AUDIT: '/audit'
+};
+
+const getInitialTabFromUrl = () => {
+  try {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('/dashboard')) return 'DASHBOARD';
+    if (path.includes('/institutions')) return 'INSTITUTIONS';
+    if (path.includes('/records')) return 'RECORDS';
+    if (path.includes('/batch-import')) return 'BATCH_IMPORT';
+    if (path.includes('/verify')) return 'VERIFY';
+    if (path.includes('/login')) return 'LOGIN';
+    if (path.includes('/student')) return 'STUDENT';
+    if (path.includes('/admin')) return 'ADMIN';
+    if (path.includes('/ingestion')) return 'INGESTION';
+    if (path.includes('/verifier')) return 'VERIFIER';
+    if (path.includes('/certificate')) return 'CERTIFICATE';
+    if (path.includes('/audit')) return 'AUDIT';
+  } catch {}
+  return 'DASHBOARD';
+};
+
 export default function App() {
-  const [currentRole, setRole] = useState('INSTITUTION_NODAL'); // Default to Nodal for immediate wow factor on Ingestion
-  const [currentTab, setTab] = useState('INGESTION');
+  const [currentRole, setRole] = useState('CENTRAL_ADMIN');
+  const [currentTab, setTab] = useState(getInitialTabFromUrl);
+
+  const navigateTab = (newTab) => {
+    setTab(newTab);
+    const path = TAB_TO_PATH[newTab] || '/';
+    try {
+      if (window.location.pathname !== path) {
+        window.history.pushState(null, '', path);
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    const onPopState = () => {
+      setTab(getInitialTabFromUrl());
+    };
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
   const [darkMode, setDarkMode] = useState(() => {
     try {
       const saved = localStorage.getItem('aicte_theme');
@@ -145,10 +204,17 @@ export default function App() {
     setRole(user.role);
 
     // Auto-navigate to the authenticated stakeholder's dedicated portal view
-    if (user.role === 'CENTRAL_ADMIN') setTab('ADMIN');
-    else if (user.role === 'INSTITUTION_NODAL') setTab('INGESTION');
-    else if (user.role === 'PUBLIC_VERIFIER') setTab('VERIFIER');
-    else if (user.role === 'STUDENT') setTab('STUDENT');
+    if (user.redirectTab) {
+      navigateTab(user.redirectTab);
+    } else if (user.role === 'CENTRAL_ADMIN' || user.role === 'AICTE_OFFICIAL') {
+      navigateTab('DASHBOARD');
+    } else if (user.role === 'INSTITUTE_ADMIN' || user.role === 'INSTITUTION_NODAL') {
+      navigateTab('INSTITUTIONS');
+    } else if (user.role === 'PUBLIC_VERIFIER') {
+      navigateTab('VERIFY');
+    } else if (user.role === 'STUDENT') {
+      navigateTab('STUDENT');
+    }
 
     handleAddAuditLog({
       actor: `${user.name} (${user.roleTitle})`,
@@ -171,7 +237,7 @@ export default function App() {
     }
     clearSession();
     setCurrentUser(null);
-    setTab('LANDING');
+    navigateTab('LANDING');
   };
 
   // Jump to Certificate Generator
@@ -213,7 +279,7 @@ export default function App() {
         currentRole={currentRole}
         setRole={setRole}
         currentTab={currentTab}
-        setTab={setTab}
+        setTab={navigateTab}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
         onOpenProblemStatement={() => setIsProblemStatementOpen(true)}
@@ -230,11 +296,50 @@ export default function App() {
       {/* 2. Main Module Views */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6">
         
+        {/* Core Vidya-Verify Features */}
+        {currentTab === 'DASHBOARD' && (
+          <RegulatoryDashboard
+            onNavigateTab={navigateTab}
+            onAddAuditLog={handleAddAuditLog}
+          />
+        )}
+
+        {currentTab === 'INSTITUTIONS' && (
+          <InstitutionDirectory
+            onAddAuditLog={handleAddAuditLog}
+          />
+        )}
+
+        {currentTab === 'RECORDS' && (
+          <StudentRecordsModule
+            onNavigateTab={navigateTab}
+          />
+        )}
+
+        {currentTab === 'BATCH_IMPORT' && (
+          <BatchImportEngine
+            onAddAuditLog={handleAddAuditLog}
+            onNavigateTab={navigateTab}
+          />
+        )}
+
+        {currentTab === 'VERIFY' && (
+          <PublicVerificationTool />
+        )}
+
+        {currentTab === 'LOGIN' && (
+          <MultiStepLogin
+            isOpen={true}
+            isModal={false}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        )}
+
         {currentTab === 'LANDING' && (
           <LandingHub
             students={allStudents}
             institutions={institutions}
-            setTab={setTab}
+            setTab={navigateTab}
             setRole={setRole}
             onVerifySelect={handleViewCertificate}
             onOpenLoginModal={handleOpenLoginModal}
@@ -372,12 +477,12 @@ export default function App() {
         institutions={institutions}
       />
 
-      {/* Stakeholder Login & Authentication Gateway Modal */}
-      <LoginModal
+      {/* High-Fidelity 3-Step Authentication Gateway Modal */}
+      <MultiStepLogin
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
-        initialRole={loginModalInitialRole}
+        isModal={true}
       />
 
 

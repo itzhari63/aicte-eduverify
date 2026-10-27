@@ -22,7 +22,10 @@ import {
   LogOut,
   User,
   Lock,
-  Sparkles
+  Sparkles,
+  FileText,
+  UploadCloud,
+  QrCode
 } from 'lucide-react';
 
 export default function Header({ 
@@ -459,11 +462,16 @@ export default function Header({
       <div className="bg-slate-50 dark:bg-slate-900/90 border-t border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 overflow-x-auto scrollbar-none">
         <div className="max-w-7xl mx-auto flex items-center gap-1 sm:gap-2 py-1.5">
           {[
-            { id: "LANDING", label: "Public Hub & Search", icon: Search },
+            { id: "DASHBOARD", label: "Regulatory Dashboard", icon: ShieldCheck, badge: "Apex" },
+            { id: "INSTITUTIONS", label: "Institution Directory", icon: Building2 },
+            { id: "RECORDS", label: "Student Records & Audit", icon: FileText, badge: "Audited" },
+            { id: "BATCH_IMPORT", label: "Batch Ingestion Engine", icon: UploadCloud, badge: "CSV" },
+            { id: "VERIFY", label: "Instant Public Verify", icon: QrCode, badge: "No Auth" },
+            { id: "LANDING", label: "Public Search Hub", icon: Search },
             { id: "ADMIN", label: "AICTE Apex Command", icon: Building2, badge: "National" },
-            { id: "INGESTION", label: "Institution Ingestion Studio", icon: Layers, badge: "Nodal" },
+            { id: "INGESTION", label: "Institution Studio", icon: Layers, badge: "Nodal" },
             { id: "VERIFIER", label: "Authorized Verifier", icon: UserCheck },
-            { id: "CERTIFICATE", label: "Degree & Certificate Engine", icon: FileCheck },
+            { id: "CERTIFICATE", label: "Degree Engine", icon: FileCheck },
             { id: "STUDENT", label: "Student Dossier & Consent", icon: GraduationCap },
             { id: "AUDIT", label: "Audit Trail & Logs", icon: Activity }
           ].map(tab => {

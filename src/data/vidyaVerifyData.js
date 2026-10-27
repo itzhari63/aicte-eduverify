@@ -1,0 +1,417 @@
+// Dedicated High-Fidelity Dataset for Vidya-Verify & AICTE Regulatory Monitoring
+// Aligned with SIH 2026 Problem Statement and Benchmark Platform Metrics
+
+export const VIDYA_METRICS = {
+  totalInstitutions: 173,
+  recordsVerified: 63,
+  pendingVerification: 1,
+  requiresAttention: 5,
+  sanctionedQuotaAlerts: 3
+};
+
+export const SANCTIONED_INTAKE_PROGRAMS = [
+  {
+    id: "PROG-COEP-CSE",
+    instituteName: "College of Engineering Pune (COEP Tech Univ)",
+    instituteCode: "1-10293847",
+    aisheCode: "C-41289",
+    programName: "B.Tech Computer Science & Engineering",
+    programCode: "CSE",
+    approvedIntake: 120,
+    actualAllotted: 123,
+    status: "EXCEEDED",
+    utilization: 102.5,
+    excessCount: 3,
+    alertMessage: "Intake capacity exceeded: Admitted 123 students against approved quota of 120 (+3 unauthorized admissions)."
+  },
+  {
+    id: "PROG-DTU-AI",
+    instituteName: "Delhi Technological University (DTU)",
+    instituteCode: "1-20491823",
+    aisheCode: "U-0104",
+    programName: "B.Tech Artificial Intelligence & Machine Learning",
+    programCode: "AIML",
+    approvedIntake: 60,
+    actualAllotted: 62,
+    status: "EXCEEDED",
+    utilization: 103.3,
+    excessCount: 2,
+    alertMessage: "Intake capacity exceeded: Admitted 62 students against approved quota of 60 (+2 unauthorized admissions)."
+  },
+  {
+    id: "PROG-NIT-ECE",
+    instituteName: "National Institute of Technology Karnataka (NITK Surathkal)",
+    instituteCode: "1-99214501",
+    aisheCode: "U-0238",
+    programName: "B.Tech Electronics & Communication Engineering",
+    programCode: "ECE",
+    approvedIntake: 90,
+    actualAllotted: 91,
+    status: "EXCEEDED",
+    utilization: 101.1,
+    excessCount: 1,
+    alertMessage: "Intake capacity exceeded: Admitted 91 students against approved quota of 90 (+1 unauthorized admission)."
+  },
+  {
+    id: "PROG-RVCE-ISE",
+    instituteName: "R.V. College of Engineering (RVCE Bangalore)",
+    instituteCode: "1-48201934",
+    aisheCode: "C-1294",
+    programName: "B.Tech Information Science & Engineering",
+    programCode: "ISE",
+    approvedIntake: 120,
+    actualAllotted: 118,
+    status: "WARNING",
+    utilization: 98.3,
+    excessCount: 0,
+    alertMessage: "Intake threshold warning: 98.3% capacity utilized (118/120 seats filled)."
+  },
+  {
+    id: "PROG-PSG-MECH",
+    instituteName: "PSG College of Technology (Coimbatore)",
+    instituteCode: "1-57201923",
+    aisheCode: "C-2512",
+    programName: "B.Tech Mechanical Engineering",
+    programCode: "MECH",
+    approvedIntake: 120,
+    actualAllotted: 95,
+    status: "NORMAL",
+    utilization: 79.2,
+    excessCount: 0,
+    alertMessage: "Normal enrollment within sanctioned intake limits."
+  }
+];
+
+export const DATA_INTEGRITY_FLAGS = [
+  {
+    id: "FLAG-CRIT-001",
+    apaarId: "982345128831",
+    formattedApaar: "9823-4512-8831",
+    studentName: "Aditi Ramesh Sharma",
+    riskScore: "Critical",
+    riskLevel: "CRITICAL",
+    flagType: "CROSS_INSTITUTION_DUPLICATE",
+    primaryInstitute: "College of Engineering Pune (COEP)",
+    secondaryInstitute: "Delhi Technological University (DTU)",
+    reason: "Potential duplicate candidate: Cross-institution duplicate APAAR crossover detected between College of Engineering Pune and Delhi Technological University.",
+    timestamp: "2026-10-27T10:14:22Z",
+    status: "REQUIRES_ATTENTION",
+    enrolledPrograms: ["B.Tech CSE (COEP)", "B.Tech IT (DTU)"]
+  },
+  {
+    id: "FLAG-CRIT-002",
+    apaarId: "771240916623",
+    formattedApaar: "7712-4091-6623",
+    studentName: "Priya Sundaram",
+    riskScore: "Critical",
+    riskLevel: "CRITICAL",
+    flagType: "SIMULTANEOUS_FULLTIME_ADMISSION",
+    primaryInstitute: "Delhi Technological University (DTU)",
+    secondaryInstitute: "National Institute of Technology Delhi (NITD)",
+    reason: "Potential duplicate candidate: Simultaneous full-time regular admission registered with identical 12-digit APAAR ID across state lines.",
+    timestamp: "2026-10-27T11:42:10Z",
+    status: "REQUIRES_ATTENTION",
+    enrolledPrograms: ["B.Tech ECE (DTU)", "B.Tech CSE (NITD)"]
+  },
+  {
+    id: "FLAG-HIGH-003",
+    apaarId: "814592013342",
+    formattedApaar: "8145-9201-3342",
+    studentName: "Rohan Jayesh Patel",
+    riskScore: "High",
+    riskLevel: "HIGH",
+    flagType: "INTAKE_CAP_BREACH",
+    primaryInstitute: "College of Engineering Pune (COEP)",
+    secondaryInstitute: "None",
+    reason: "Candidate allotted under General Quota after sanction ceiling reached 100% capacity.",
+    timestamp: "2026-10-27T09:30:00Z",
+    status: "REQUIRES_ATTENTION",
+    enrolledPrograms: ["B.Tech CSE (COEP)"]
+  },
+  {
+    id: "FLAG-MED-004",
+    apaarId: "654321987654",
+    formattedApaar: "6543-2198-7654",
+    studentName: "Kavita Narayanan",
+    riskScore: "Medium",
+    riskLevel: "MEDIUM",
+    flagType: "CREDENTIAL_MISMATCH",
+    primaryInstitute: "R.V. College of Engineering (RVCE)",
+    secondaryInstitute: "None",
+    reason: "Date of Birth registered in institutional ERP differs by 3 days from Sovereign Aadhaar eKYC ledger.",
+    timestamp: "2026-10-26T16:15:40Z",
+    status: "REQUIRES_ATTENTION",
+    enrolledPrograms: ["B.Tech ISE (RVCE)"]
+  },
+  {
+    id: "FLAG-LOW-005",
+    apaarId: "541298763214",
+    formattedApaar: "5412-9876-3214",
+    studentName: "Manish Kumar Verma",
+    riskScore: "Low",
+    riskLevel: "LOW",
+    flagType: "PENDING_VERIFICATION",
+    primaryInstitute: "PSG College of Technology",
+    secondaryInstitute: "None",
+    reason: "Provisional transfer certificate uploaded pending final biometric hash anchoring on DigiLocker.",
+    timestamp: "2026-10-26T14:02:18Z",
+    status: "PENDING_VERIFICATION",
+    enrolledPrograms: ["B.Tech MECH (PSG Tech)"]
+  }
+];
+
+export const VIDYA_INSTITUTIONS = [
+  {
+    id: "INST-001",
+    aisheCode: "C-41289",
+    name: "College of Engineering Pune (COEP Tech Univ)",
+    shortName: "COEP Pune",
+    state: "Maharashtra",
+    type: "State Autonomous Govt. Aided",
+    activeProgramsCount: 14,
+    enrolledStudentsCount: 3840,
+    sanctionedQuota: 3720,
+    capacityUtilization: 103.2,
+    status: "EXCEEDED",
+    nodalOfficer: "Dr. Sudhir Deshmukh",
+    nodalEmail: "dean.academics@coep.ac.in",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 120, enrolled: 123 },
+      { code: "AIDS", name: "AI & Data Science", approvedIntake: 60, enrolled: 60 },
+      { code: "ENTC", name: "Electronics & Telecomm", approvedIntake: 120, enrolled: 119 },
+      { code: "MECH", name: "Mechanical Engineering", approvedIntake: 120, enrolled: 112 }
+    ]
+  },
+  {
+    id: "INST-002",
+    aisheCode: "U-0104",
+    name: "Delhi Technological University (DTU)",
+    shortName: "DTU Delhi",
+    state: "Delhi",
+    type: "State University",
+    activeProgramsCount: 18,
+    enrolledStudentsCount: 5210,
+    sanctionedQuota: 5100,
+    capacityUtilization: 102.1,
+    status: "EXCEEDED",
+    nodalOfficer: "Prof. Rajesh Kumar",
+    nodalEmail: "admissions@dtu.ac.in",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 180, enrolled: 182 },
+      { code: "AIML", name: "AI & Machine Learning", approvedIntake: 60, enrolled: 62 },
+      { code: "IT", name: "Information Technology", approvedIntake: 120, enrolled: 118 }
+    ]
+  },
+  {
+    id: "INST-003",
+    aisheCode: "U-0238",
+    name: "National Institute of Technology Karnataka (NITK Surathkal)",
+    shortName: "NITK Surathkal",
+    state: "Karnataka",
+    type: "Institute of National Importance",
+    activeProgramsCount: 12,
+    enrolledStudentsCount: 3120,
+    sanctionedQuota: 3100,
+    capacityUtilization: 100.6,
+    status: "EXCEEDED",
+    nodalOfficer: "Dr. G. C. Mohan Kumar",
+    nodalEmail: "admissions@nitk.edu.in",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 120, enrolled: 121 },
+      { code: "ECE", name: "Electronics & Communication", approvedIntake: 90, enrolled: 91 }
+    ]
+  },
+  {
+    id: "INST-004",
+    aisheCode: "C-1294",
+    name: "R.V. College of Engineering (RVCE)",
+    shortName: "RVCE Bangalore",
+    state: "Karnataka",
+    type: "Autonomous Private Aided",
+    activeProgramsCount: 16,
+    enrolledStudentsCount: 4180,
+    sanctionedQuota: 4300,
+    capacityUtilization: 97.2,
+    status: "NORMAL",
+    nodalOfficer: "Dr. K. N. Subramanya",
+    nodalEmail: "principal@rvce.edu.in",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 180, enrolled: 179 },
+      { code: "ISE", name: "Information Science & Engineering", approvedIntake: 120, enrolled: 118 }
+    ]
+  },
+  {
+    id: "INST-005",
+    aisheCode: "C-2512",
+    name: "PSG College of Technology",
+    shortName: "PSG Tech",
+    state: "Tamil Nadu",
+    type: "Govt. Aided Autonomous",
+    activeProgramsCount: 15,
+    enrolledStudentsCount: 3920,
+    sanctionedQuota: 4100,
+    capacityUtilization: 95.6,
+    status: "NORMAL",
+    nodalOfficer: "Dr. K. Prakasan",
+    nodalEmail: "principal@psgtech.edu",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Science & Engineering", approvedIntake: 120, enrolled: 120 },
+      { code: "MECH", name: "Mechanical Engineering", approvedIntake: 120, enrolled: 95 }
+    ]
+  },
+  {
+    id: "INST-006",
+    aisheCode: "C-3011",
+    name: "Veermata Jijabai Technological Institute (VJTI)",
+    shortName: "VJTI Mumbai",
+    state: "Maharashtra",
+    type: "Govt. Autonomous",
+    activeProgramsCount: 11,
+    enrolledStudentsCount: 2980,
+    sanctionedQuota: 3100,
+    capacityUtilization: 96.1,
+    status: "NORMAL",
+    nodalOfficer: "Dr. Sachin Kore",
+    nodalEmail: "dean.ap@vjti.ac.in",
+    approvalYear: 2026,
+    programs: [
+      { code: "CSE", name: "Computer Engineering", approvedIntake: 120, enrolled: 119 }
+    ]
+  }
+];
+
+export const RECENT_STUDENT_LEDGER = [
+  {
+    id: "LED-001",
+    apaarId: "982345128831",
+    formattedApaar: "9823-4512-8831",
+    studentName: "Aditi Ramesh Sharma",
+    institutionCode: "1-10293847",
+    institutionName: "College of Engineering Pune",
+    enrolledProgram: "B.Tech Computer Science & Engineering",
+    programCode: "CSE",
+    admissionBatch: "2026-2030",
+    status: "Needs Review",
+    statusCode: "NEEDS_REVIEW",
+    abcCredits: 84,
+    timestamp: "2 mins ago",
+    ledgerHash: "0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
+  },
+  {
+    id: "LED-002",
+    apaarId: "814592013342",
+    formattedApaar: "8145-9201-3342",
+    studentName: "Rohan Jayesh Patel",
+    institutionCode: "1-10293847",
+    institutionName: "College of Engineering Pune",
+    enrolledProgram: "B.Tech Computer Science & Engineering",
+    programCode: "CSE",
+    admissionBatch: "2026-2030",
+    status: "Verified",
+    statusCode: "VERIFIED",
+    abcCredits: 78,
+    timestamp: "14 mins ago",
+    ledgerHash: "0x5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+  },
+  {
+    id: "LED-003",
+    apaarId: "771240916623",
+    formattedApaar: "7712-4091-6623",
+    studentName: "Priya Sundaram",
+    institutionCode: "1-20491823",
+    institutionName: "Delhi Technological University",
+    enrolledProgram: "B.Tech Electronics & Communication",
+    programCode: "ECE",
+    admissionBatch: "2026-2030",
+    status: "Needs Review",
+    statusCode: "NEEDS_REVIEW",
+    abcCredits: 92,
+    timestamp: "28 mins ago",
+    ledgerHash: "0x4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a"
+  },
+  {
+    id: "LED-004",
+    apaarId: "723488910192",
+    formattedApaar: "7234-8891-0192",
+    studentName: "Ananya Sundaram",
+    institutionCode: "1-10293847",
+    institutionName: "College of Engineering Pune",
+    enrolledProgram: "B.Tech AI & Data Science",
+    programCode: "AIDS",
+    admissionBatch: "2026-2030",
+    status: "Verified",
+    statusCode: "VERIFIED",
+    abcCredits: 80,
+    timestamp: "1 hour ago",
+    ledgerHash: "0xef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d"
+  },
+  {
+    id: "LED-005",
+    apaarId: "654321987654",
+    formattedApaar: "6543-2198-7654",
+    studentName: "Kavita Narayanan",
+    institutionCode: "1-48201934",
+    institutionName: "R.V. College of Engineering",
+    enrolledProgram: "B.Tech Information Science",
+    programCode: "ISE",
+    admissionBatch: "2026-2030",
+    status: "Needs Review",
+    statusCode: "NEEDS_REVIEW",
+    abcCredits: 76,
+    timestamp: "2 hours ago",
+    ledgerHash: "0x1b4f0e9851971998e732078544c96b36c3d01cedf7caa332359d6f1dd4b8dfd1"
+  },
+  {
+    id: "LED-006",
+    apaarId: "541298763214",
+    formattedApaar: "5412-9876-3214",
+    studentName: "Manish Kumar Verma",
+    institutionCode: "1-57201923",
+    institutionName: "PSG College of Technology",
+    enrolledProgram: "B.Tech Mechanical Engineering",
+    programCode: "MECH",
+    admissionBatch: "2026-2030",
+    status: "Pending",
+    statusCode: "PENDING",
+    abcCredits: 68,
+    timestamp: "3 hours ago",
+    ledgerHash: "0xa689a7749ee9fbe9f76c04612915674a735f92e581738ec2aea0f649e59d6923"
+  },
+  {
+    id: "LED-007",
+    apaarId: "902144558812",
+    formattedApaar: "9021-4455-8812",
+    studentName: "Devendra Singhania",
+    institutionCode: "1-99214501",
+    institutionName: "NITK Surathkal",
+    enrolledProgram: "B.Tech Electronics & Communication",
+    programCode: "ECE",
+    admissionBatch: "2026-2030",
+    status: "Verified",
+    statusCode: "VERIFIED",
+    abcCredits: 88,
+    timestamp: "4 hours ago",
+    ledgerHash: "0x2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+  },
+  {
+    id: "LED-008",
+    apaarId: "449102837192",
+    formattedApaar: "4491-0283-7192",
+    studentName: "Tanvi Deshpande",
+    institutionCode: "1-30119283",
+    institutionName: "VJTI Mumbai",
+    enrolledProgram: "B.Tech Computer Engineering",
+    programCode: "CSE",
+    admissionBatch: "2026-2030",
+    status: "Verified",
+    statusCode: "VERIFIED",
+    abcCredits: 82,
+    timestamp: "5 hours ago",
+    ledgerHash: "0xfb6c0068a4d46d0a7a39d8926019349601d360ecb4b7348981e7d0f94539ef2a"
+  }
+];
