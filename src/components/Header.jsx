@@ -17,7 +17,12 @@ import {
   AlertCircle,
   Database,
   MessageSquare,
-  Smartphone
+  Smartphone,
+  LogIn,
+  LogOut,
+  User,
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
 export default function Header({ 
@@ -32,10 +37,14 @@ export default function Header({
   onOpenRegulatoryAlerts,
   activeAlertCount = 2,
   backendConnected = false,
-  dbConnected = false
+  dbConnected = false,
+  currentUser = null,
+  onOpenLoginModal,
+  onLogout
 }) {
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const roles = [
     {
@@ -131,81 +140,214 @@ export default function Header({
           {/* Right Action Controls: Role Switcher, Notifications, Theme */}
           <div className="flex items-center gap-2 sm:gap-3">
             
-            {/* Role Switcher Gateway */}
-            <div className="relative">
-              <button
-                onClick={() => setShowRoleMenu(!showRoleMenu)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 transition text-left"
-              >
-                <div className="p-1 rounded-lg bg-blue-600 text-white">
-                  <currentRoleObj.icon className="w-4 h-4" />
-                </div>
-                <div className="hidden md:block">
-                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
-                    {currentRoleObj.title}
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                  </div>
-                  <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[150px]">
-                    {currentRoleObj.subtitle}
-                  </div>
-                </div>
-                <ChevronDown className="w-4 h-4 text-slate-400 md:hidden" />
-              </button>
+            {/* Authenticated User Session Pill OR Stakeholder Login Gateway */}
+            {currentUser ? (
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {/* Active Session Profile Trigger */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 transition text-left cursor-pointer"
+                  >
+                    {/* User Avatar / Initials */}
+                    {currentUser.avatar ? (
+                      <img 
+                        src={currentUser.avatar} 
+                        alt={currentUser.name} 
+                        className="w-7 h-7 rounded-lg object-cover ring-1 ring-blue-500/40 shrink-0" 
+                      />
+                    ) : (
+                      <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                        {currentUser.name?.charAt(0) || 'U'}
+                      </div>
+                    )}
 
-              {/* Role Switcher Dropdown */}
-              {showRoleMenu && (
-                <>
-                  <div className="fixed inset-0 z-30" onClick={() => setShowRoleMenu(false)} />
-                  <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 z-40 p-2 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      Select Authorized Stakeholder Role
+                    <div className="hidden md:block">
+                      <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                        <span className="truncate max-w-[140px]">{currentUser.name}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      </div>
+                      <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="truncate max-w-[120px]">{currentUser.roleTitle}</span>
+                      </div>
                     </div>
-                    <div className="mt-1 space-y-1">
-                      {roles.map(role => {
-                        const Icon = role.icon;
-                        const isSelected = role.id === currentRole;
-                        return (
+                    <ChevronDown className="w-4 h-4 text-slate-400 md:hidden" />
+                  </button>
+
+                  {/* Account Profile & Session Dropdown Menu */}
+                  {showUserMenu && (
+                    <>
+                      <div className="fixed inset-0 z-30" onClick={() => setShowUserMenu(false)} />
+                      <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 z-40 p-3 animate-in fade-in zoom-in-95 duration-150">
+                        {/* Profile Header */}
+                        <div className="flex items-start gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+                          {currentUser.avatar ? (
+                            <img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-xl object-cover ring-2 ring-blue-500/30" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                              {currentUser.name?.charAt(0) || 'U'}
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-extrabold text-slate-900 dark:text-white truncate">
+                              {currentUser.name}
+                            </div>
+                            <div className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold truncate">
+                              {currentUser.designation || currentUser.roleTitle}
+                            </div>
+                            <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                              {currentUser.email || currentUser.apaarId || currentUser.organization}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Session Metadata */}
+                        <div className="py-2.5 space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400">
+                          <div className="flex justify-between items-center">
+                            <span>Sovereign Role:</span>
+                            <span className="font-bold text-slate-800 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-[10px]">
+                              {currentUser.roleTitle}
+                            </span>
+                          </div>
+                          {currentUser.organization && (
+                            <div className="flex justify-between items-center">
+                              <span>Organization:</span>
+                              <span className="font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[150px]">
+                                {currentUser.organization}
+                              </span>
+                            </div>
+                          )}
+                          <div className="flex justify-between items-center">
+                            <span>Security Clearance:</span>
+                            <span className="font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
+                              {currentUser.securityLevel || 'AUTHENTICATED'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Account Actions */}
+                        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
                           <button
-                            key={role.id}
                             onClick={() => {
-                              setRole(role.id);
-                              setShowRoleMenu(false);
-                              // Auto switch to role's primary view
-                              if (role.id === "CENTRAL_ADMIN") setTab("ADMIN");
-                              else if (role.id === "INSTITUTION_NODAL") setTab("INGESTION");
-                              else if (role.id === "PUBLIC_VERIFIER") setTab("VERIFIER");
-                              else if (role.id === "STUDENT") setTab("STUDENT");
+                              setShowUserMenu(false);
+                              onOpenLoginModal?.(currentUser.role);
                             }}
-                            className={`w-full text-left p-2.5 rounded-lg flex items-start gap-3 transition ${
-                              isSelected 
-                                ? "bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900" 
-                                : "hover:bg-slate-100 dark:hover:bg-slate-800"
-                            }`}
+                            className="w-full py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition"
                           >
-                            <div className={`p-1.5 rounded-lg mt-0.5 ${isSelected ? "bg-blue-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}`}>
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                                  {role.title}
-                                </span>
-                                <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold ${role.badgeColor}`}>
-                                  {role.badge}
-                                </span>
-                              </div>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                                {role.subtitle}
-                              </p>
-                            </div>
+                            <LogIn className="w-3.5 h-3.5" />
+                            <span>Switch Account / Stakeholder</span>
                           </button>
-                        );
-                      })}
+
+                          <button
+                            onClick={() => {
+                              setShowUserMenu(false);
+                              onLogout?.();
+                            }}
+                            className="w-full py-1.5 px-3 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-950/60 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 border border-red-200/80 dark:border-red-900/60 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+                          >
+                            <LogOut className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                            <span>Sign Out of AICTE Portal</span>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Instant 1-Click Logout Button in Header Bar */}
+                <button
+                  onClick={onLogout}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 rounded-xl border border-red-200/80 dark:border-red-800/60 transition text-xs font-bold cursor-pointer"
+                  title="Sign Out of Session"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
+                  <span className="hidden sm:inline">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                {/* Guest Role Preview Switcher */}
+                <div className="relative hidden md:block">
+                  <button
+                    onClick={() => setShowRoleMenu(!showRoleMenu)}
+                    className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 transition text-left"
+                    title="Select Stakeholder Preview"
+                  >
+                    <div className="p-1 rounded-lg bg-blue-600 text-white">
+                      <currentRoleObj.icon className="w-3.5 h-3.5" />
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
+                    <div className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                      <span>{currentRoleObj.title}</span>
+                      <ChevronDown className="w-3 h-3 text-slate-400" />
+                    </div>
+                  </button>
+
+                  {/* Role Switcher Dropdown */}
+                  {showRoleMenu && (
+                    <>
+                      <div className="fixed inset-0 z-30" onClick={() => setShowRoleMenu(false)} />
+                      <div className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 z-40 p-2 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                          Select Stakeholder Portal to Access
+                        </div>
+                        <div className="mt-1 space-y-1">
+                          {roles.map(role => {
+                            const Icon = role.icon;
+                            const isSelected = role.id === currentRole;
+                            return (
+                              <button
+                                key={role.id}
+                                onClick={() => {
+                                  setRole(role.id);
+                                  setShowRoleMenu(false);
+                                  if (role.id === "CENTRAL_ADMIN") setTab("ADMIN");
+                                  else if (role.id === "INSTITUTION_NODAL") setTab("INGESTION");
+                                  else if (role.id === "PUBLIC_VERIFIER") setTab("VERIFIER");
+                                  else if (role.id === "STUDENT") setTab("STUDENT");
+                                }}
+                                className={`w-full text-left p-2 rounded-lg flex items-start gap-2.5 transition ${
+                                  isSelected 
+                                    ? "bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900" 
+                                    : "hover:bg-slate-100 dark:hover:bg-slate-800"
+                                }`}
+                              >
+                                <div className={`p-1.5 rounded-lg mt-0.5 ${isSelected ? "bg-blue-600 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300"}`}>
+                                  <Icon className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate">
+                                      {role.title}
+                                    </span>
+                                    <span className={`text-[9px] px-1.5 py-0.2 rounded font-semibold shrink-0 ${role.badgeColor}`}>
+                                      {role.badge}
+                                    </span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                                    {role.subtitle}
+                                  </p>
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Primary Stakeholder Login Trigger */}
+                <button
+                  onClick={() => onOpenLoginModal?.(currentRole)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white rounded-xl shadow-md text-xs font-bold transition hover:scale-105 active:scale-95 cursor-pointer"
+                  title="Authenticate into AICTE Stakeholder Portal"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Stakeholder Login</span>
+                </button>
+              </div>
+            )}
 
             {/* WhatsApp & SMS Regulatory Dispatcher Trigger */}
             <button

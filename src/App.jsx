@@ -11,6 +11,8 @@ import ProblemStatementModal from './components/ProblemStatementModal';
 import PolicyReportsModal from './components/PolicyReportsModal';
 import MongoConnectModal from './components/MongoConnectModal';
 import RegulatoryAlertsModal from './components/RegulatoryAlertsModal';
+import LoginModal from './components/LoginModal';
+import { getSavedSession, saveSession, clearSession } from './data/authUsers';
 
 import { 
   INITIAL_INSTITUTIONS, 
@@ -46,6 +48,11 @@ export default function App() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isMongoModalOpen, setIsMongoModalOpen] = useState(false);
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
+  // Authentication & Stakeholder User Session State
+  const [currentUser, setCurrentUser] = useState(() => getSavedSession());
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginModalInitialRole, setLoginModalInitialRole] = useState('CENTRAL_ADMIN');
+
   const [reportModalType, setReportModalType] = useState('NIRF');
   const [selectedStudentForCert, setSelectedStudentForCert] = useState(null);
 
@@ -126,6 +133,47 @@ export default function App() {
     } catch {}
   };
 
+  // Stakeholder Login & Logout Handlers
+  const handleOpenLoginModal = (role = 'CENTRAL_ADMIN') => {
+    setLoginModalInitialRole(role);
+    setIsLoginModalOpen(true);
+  };
+
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+    saveSession(user);
+    setRole(user.role);
+
+    // Auto-navigate to the authenticated stakeholder's dedicated portal view
+    if (user.role === 'CENTRAL_ADMIN') setTab('ADMIN');
+    else if (user.role === 'INSTITUTION_NODAL') setTab('INGESTION');
+    else if (user.role === 'PUBLIC_VERIFIER') setTab('VERIFIER');
+    else if (user.role === 'STUDENT') setTab('STUDENT');
+
+    handleAddAuditLog({
+      actor: `${user.name} (${user.roleTitle})`,
+      actorName: user.name,
+      action: "USER_AUTHENTICATED_SESSION",
+      details: `Sovereign SSO session established via ${user.ssoProvider || 'National Gateway'}. Security clearance granted.`,
+      status: "AUTHENTIC_VALIDATED"
+    });
+  };
+
+  const handleLogout = () => {
+    if (currentUser) {
+      handleAddAuditLog({
+        actor: `${currentUser.name} (${currentUser.roleTitle})`,
+        actorName: currentUser.name,
+        action: "USER_SESSION_TERMINATED",
+        details: `User explicitly signed out of AICTE-EduVerify. Cryptographic session token revoked and invalidated.`,
+        status: "SESSION_REVOKED"
+      });
+    }
+    clearSession();
+    setCurrentUser(null);
+    setTab('LANDING');
+  };
+
   // Jump to Certificate Generator
   const handleViewCertificate = (student) => {
     setSelectedStudentForCert(student);
@@ -174,6 +222,9 @@ export default function App() {
         activeAlertCount={activeDuplicateCount}
         backendConnected={backendConnected}
         dbConnected={dbConnected}
+        currentUser={currentUser}
+        onOpenLoginModal={handleOpenLoginModal}
+        onLogout={handleLogout}
       />
 
       {/* 2. Main Module Views */}
@@ -186,6 +237,7 @@ export default function App() {
             setTab={setTab}
             setRole={setRole}
             onVerifySelect={handleViewCertificate}
+            onOpenLoginModal={handleOpenLoginModal}
           />
         )}
 
@@ -318,6 +370,14 @@ export default function App() {
         onClose={() => setIsAlertsModalOpen(false)}
         students={allStudents}
         institutions={institutions}
+      />
+
+      {/* Stakeholder Login & Authentication Gateway Modal */}
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        initialRole={loginModalInitialRole}
       />
 
 

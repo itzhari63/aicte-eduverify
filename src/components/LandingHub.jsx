@@ -17,12 +17,15 @@ import {
   Sparkles,
   ExternalLink,
   Users,
-  AlertCircle
+  AlertCircle,
+  LogIn,
+  UserCheck,
+  GraduationCap
 } from 'lucide-react';
 import { formatApaar, cleanApaar } from '../data/validationEngine';
 import { api } from '../services/api';
 
-export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect }) {
+export default function LandingHub({ students, institutions = [], setTab, setRole, onVerifySelect, onOpenLoginModal }) {
   const totalApproved = (institutions || []).reduce((sum, inst) => 
     sum + (inst.departments?.reduce((deptSum, d) => deptSum + (d.approvedIntake || 0) + (d.supernumerarySeats || 0), 0) || 0), 0
   ) || 0;
@@ -497,46 +500,175 @@ export default function LandingHub({ students, institutions = [], setTab, setRol
         </div>
       </section>
 
-      {/* 4. Role Action Jump Cards */}
+      {/* 4. Sovereign Stakeholder Access & Login Portals */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white shadow-xl border border-blue-900/40">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center lg:text-left">
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                AICTE Sovereign Depository Gateways
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white shadow-2xl border border-blue-900/40 space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-blue-900/50 pb-5">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                Sovereign Stakeholder Login Gateways
               </span>
-              <h3 className="text-2xl font-extrabold text-white">
-                Integrated National Academic Governance
+              <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
+                Authorized Stakeholder Login & Authentication Portals
               </h3>
-              <p className="text-sm text-slate-300 max-w-xl">
-                Dedicated interfaces for regulatory administration, institutional intake submissions, and authorized credential authentication.
+              <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1">
+                Single Sign-On (SSO) gateway for Apex Regulators, Approved Colleges, Corporate Verifiers, and Students with DPDP Act 2023 compliance.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <button
-                onClick={() => { setRole("CENTRAL_ADMIN"); setTab("ADMIN"); }}
-                className="px-4 py-2.5 rounded-xl bg-white text-slate-950 font-bold text-xs hover:bg-slate-100 transition shadow-md flex items-center gap-2"
-              >
-                <Building2 className="w-4 h-4 text-blue-900" />
-                <span>AICTE Central Command</span>
-              </button>
+            <button
+              onClick={() => onOpenLoginModal?.('CENTRAL_ADMIN')}
+              className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold text-xs rounded-xl shadow-lg transition hover:scale-105 active:scale-95 flex items-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Unified Gateway Login</span>
+            </button>
+          </div>
 
-              <button
-                onClick={() => { setRole("INSTITUTION_NODAL"); setTab("INGESTION"); }}
-                className="px-4 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-500 transition shadow-md flex items-center gap-2"
-              >
-                <Layers className="w-4 h-4 text-amber-300" />
-                <span>Institution Ingestion Studio</span>
-              </button>
+          {/* 4 Dedicated Stakeholder Login Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            {/* 1. AICTE Apex Admin Portal */}
+            <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-purple-500/30 transition flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-xl bg-purple-600 text-white shadow-md">
+                    <Building2 className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    Apex Level
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">AICTE Central Admin</h4>
+                <p className="text-xs text-slate-300">
+                  Apex regulatory enforcement, intake breach surveillance, and show-cause notice dispatch.
+                </p>
+              </div>
 
-              <button
-                onClick={() => { setRole("STUDENT"); setTab("STUDENT"); }}
-                className="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs hover:bg-slate-700 transition flex items-center gap-2"
-              >
-                <span>Student Identity Card</span>
-              </button>
+              <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+                <button
+                  onClick={() => onOpenLoginModal?.('CENTRAL_ADMIN')}
+                  className="flex-1 py-1.5 px-2.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Admin Login</span>
+                </button>
+                <button
+                  onClick={() => { setRole("CENTRAL_ADMIN"); setTab("ADMIN"); }}
+                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold transition"
+                  title="Direct Sandbox View"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
+
+            {/* 2. Institution Nodal Portal */}
+            <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-blue-500/30 transition flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-xl bg-blue-600 text-white shadow-md">
+                    <Layers className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                    Approved Colleges
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">Institution Nodal Portal</h4>
+                <p className="text-xs text-slate-300">
+                  Student data ingestion studio, CSV/Excel smart mapper, and degree credential generation.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+                <button
+                  onClick={() => onOpenLoginModal?.('INSTITUTION_NODAL')}
+                  className="flex-1 py-1.5 px-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Nodal Login</span>
+                </button>
+                <button
+                  onClick={() => { setRole("INSTITUTION_NODAL"); setTab("INGESTION"); }}
+                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold transition"
+                  title="Direct Sandbox View"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 3. Authorized Verifier Portal */}
+            <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-emerald-500/30 transition flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-xl bg-emerald-600 text-white shadow-md">
+                    <UserCheck className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Third-Party BGV
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">Authorized Verifier</h4>
+                <p className="text-xs text-slate-300">
+                  Employers and background screeners verifying credentials via immutable cryptographic ledger.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+                <button
+                  onClick={() => onOpenLoginModal?.('PUBLIC_VERIFIER')}
+                  className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Verifier Login</span>
+                </button>
+                <button
+                  onClick={() => { setRole("PUBLIC_VERIFIER"); setTab("VERIFIER"); }}
+                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold transition"
+                  title="Direct Sandbox View"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* 4. Student APAAR Portal */}
+            <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-amber-500/30 transition flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="p-2 rounded-xl bg-amber-600 text-white shadow-md">
+                    <GraduationCap className="w-5 h-5" />
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    Learners & ABC
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold text-white">Student APAAR Portal</h4>
+                <p className="text-xs text-slate-300">
+                  Digital academic identity, Academic Bank of Credits (ABC), and DPDP consent management.
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-white/10 flex items-center gap-2">
+                <button
+                  onClick={() => onOpenLoginModal?.('STUDENT')}
+                  className="flex-1 py-1.5 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Student Login</span>
+                </button>
+                <button
+                  onClick={() => { setRole("STUDENT"); setTab("STUDENT"); }}
+                  className="py-1.5 px-2 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold transition"
+                  title="Direct Sandbox View"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

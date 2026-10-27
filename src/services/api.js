@@ -211,5 +211,32 @@ export const api = {
       body: JSON.stringify({ uri })
     });
     return await handleResponse(res);
+  },
+
+  // 11. Stakeholder Authentication & Session
+  async login(credentials) {
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: defaultHeaders,
+        body: JSON.stringify(credentials)
+      });
+      return await handleResponse(res);
+    } catch (err) {
+      console.warn('Backend login fallback to local session:', err.message);
+      return null;
+    }
+  },
+
+  async logout() {
+    try {
+      const res = await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        headers: defaultHeaders
+      });
+      return await handleResponse(res);
+    } catch (err) {
+      return { success: true };
+    }
   }
 };

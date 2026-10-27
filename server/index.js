@@ -80,6 +80,112 @@ app.use((req, res, next) => {
 });
 
 // ==========================================
+// 1.5. STAKEHOLDER AUTHENTICATION & LOGIN API
+// ==========================================
+app.post('/api/auth/login', (req, res) => {
+  const { role, identifier } = req.body;
+  const token = `aicte_auth_${crypto.randomBytes(16).toString('hex')}`;
+
+  let user = null;
+  if (role === 'CENTRAL_ADMIN') {
+    user = {
+      id: "USR-AICTE-001",
+      role: "CENTRAL_ADMIN",
+      roleTitle: "AICTE Central Admin",
+      name: "Prof. T. G. Sitharam",
+      designation: "Chairman, AICTE & Apex Regulatory Authority",
+      email: identifier || "admin@aicte-india.org",
+      organization: "All India Council for Technical Education (AICTE HQ)",
+      department: "National Academic Bureau, Nelson Mandela Marg, New Delhi",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      ssoProvider: "Parichay / MeriPehchan (National Government SSO)",
+      securityLevel: "LEVEL-4 APEX CLEARANCE",
+      token
+    };
+  } else if (role === 'INSTITUTION_NODAL') {
+    const pid = req.body.pid || identifier || "1-10293847";
+    user = {
+      id: "USR-NODAL-1029",
+      role: "INSTITUTION_NODAL",
+      roleTitle: "Institution Nodal Officer",
+      name: "Dr. Sudhir Deshmukh",
+      designation: "Dean of Academic Admissions & Nodal Officer",
+      email: identifier || "dean.academics@coep.ac.in",
+      pid: pid,
+      organization: "College of Engineering Pune (COEP Technological University)",
+      institutionId: pid,
+      institutionName: "College of Engineering Pune (COEP Technological University)",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      ssoProvider: "AICTE Approval Bureau Institutional Federation",
+      securityLevel: "LEVEL-2 INSTITUTIONAL NODAL",
+      token
+    };
+  } else if (role === 'PUBLIC_VERIFIER') {
+    user = {
+      id: "USR-VER-8821",
+      role: "PUBLIC_VERIFIER",
+      roleTitle: "Authorized Verifier",
+      name: "Sneha Kulkarni",
+      designation: "Lead Talent Authentication & Compliance Partner",
+      email: identifier || "verify@tcs.com",
+      corporateId: "VER-TCS-902",
+      organization: "Tata Consultancy Services (Global BGV Cell)",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+      ssoProvider: "Corporate Verifier Trust Gateway (ISO/IEC 27001)",
+      securityLevel: "LEVEL-1 AUTHORIZED VERIFIER",
+      token
+    };
+  } else if (role === 'STUDENT') {
+    const cleanId = (identifier || "982345128831").replace(/-/g, '').trim();
+    user = {
+      id: "USR-STU-9823",
+      role: "STUDENT",
+      roleTitle: "Student / Academic Learner",
+      name: "Aditi Ramesh Sharma",
+      designation: "Undergraduate Student (B.Tech Computer Science)",
+      apaarId: cleanId,
+      formattedApaar: formatApaar(cleanId),
+      rollNo: "2024-CSE-042",
+      organization: "College of Engineering Pune (COEP)",
+      institutionName: "College of Engineering Pune (COEP Technological University)",
+      branch: "Computer Science & Engineering",
+      academicYear: "3rd Year (Semester VI)",
+      abcCredits: 84,
+      cgpa: "9.38",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      ssoProvider: "DigiLocker & Sovereign APAAR Identity Ledger",
+      securityLevel: "LEVEL-0 CITIZEN / LEARNER",
+      token
+    };
+  } else {
+    return res.status(400).json({ success: false, message: 'Invalid stakeholder role specified' });
+  }
+
+  return res.json({
+    success: true,
+    message: `Authenticated successfully as ${user.roleTitle}`,
+    token,
+    user
+  });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  res.json({
+    success: true,
+    message: 'User session terminated successfully. Token invalidated.'
+  });
+});
+
+app.get('/api/auth/me', (req, res) => {
+  const role = req.headers['x-role'] || 'CENTRAL_ADMIN';
+  res.json({
+    success: true,
+    authenticated: true,
+    role
+  });
+});
+
+// ==========================================
 // 2. MONGODB ATLAS CONNECTION CONTROL API
 // ==========================================
 app.get('/api/db/status', (req, res) => {
